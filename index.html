@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidhyalakshmi RV — Data Analyst</title>
+<meta name="description" content="Vidhyalakshmi RV — Data Analyst. SQL, Python, Power BI. Dashboards, KPI reporting and predictive models built on real data.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0B0F19;
+    --surface:#111826;
+    --surface-2:#161f30;
+    --border:#232d40;
+    --indigo:#6366F1;
+    --indigo-2:#4F46E5;
+    --cyan:#22D3EE;
+    --purple:#A855F7;
+    --text:#E7E9F0;
+    --muted:#8B95AB;
+    --mono:'JetBrains Mono', monospace;
+    --display:'Space Grotesk', sans-serif;
+    --body:'Inter', sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+
+  ::selection{background:var(--indigo); color:#fff;}
+
+  /* subtle grid + glow backdrop */
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.05) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+  .glow{
+    position:fixed; border-radius:50%; filter:blur(120px); z-index:0; pointer-events:none;
+  }
+  .glow-1{width:600px;height:600px; background:rgba(99,102,241,0.18); top:-200px; left:-150px;}
+  .glow-2{width:500px;height:500px; background:rgba(34,211,238,0.10); top:20%; right:-200px;}
+  .glow-3{width:600px;height:600px; background:rgba(168,85,247,0.10); bottom:-200px; left:30%;}
+
+  .container{max-width:1180px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+  /* Scroll progress bar */
+  #progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg, var(--indigo), var(--cyan));
+    z-index:1000; transition:width 0.1s ease-out;
+    box-shadow:0 0 10px rgba(99,102,241,0.6);
+  }
+
+  /* Nav */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:900;
+    backdrop-filter:blur(16px);
+    background:rgba(11,15,25,0.7);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    max-width:1180px; margin:0 auto; padding:18px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--display); font-weight:700; font-size:1.15rem; letter-spacing:-0.02em;
+    display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text);
+  }
+  .logo-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg, var(--indigo), var(--cyan));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono); font-size:0.85rem; font-weight:600; color:#0B0F19;
+  }
+  .nav-links{display:flex; gap:36px; list-style:none;}
+  .nav-links a{
+    color:var(--muted); text-decoration:none; font-size:0.92rem; font-weight:500;
+    transition:color 0.25s ease; position:relative;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:-6px; width:0; height:1.5px;
+    background:linear-gradient(90deg,var(--indigo),var(--cyan)); transition:width 0.25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{
+    display:flex; align-items:center; gap:14px;
+  }
+  .btn-ghost-sm{
+    border:1px solid var(--border); color:var(--text); padding:8px 18px; border-radius:8px;
+    font-size:0.88rem; font-weight:500; text-decoration:none; transition:all 0.25s ease;
+  }
+  .btn-ghost-sm:hover{border-color:var(--indigo); background:rgba(99,102,241,0.08);}
+  .nav-toggle{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
+  .nav-toggle span{width:22px; height:2px; background:var(--text); transition:0.3s;}
+
+  /* Section shared */
+  section{position:relative; z-index:1; padding:120px 0;}
+  .eyebrow{
+    font-family:var(--mono); font-size:0.78rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--cyan); display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .eyebrow::before{content:''; width:24px; height:1px; background:var(--cyan);}
+  h2.section-title{
+    font-family:var(--display); font-size:clamp(1.9rem, 3.4vw, 2.6rem); font-weight:600;
+    letter-spacing:-0.02em; margin-bottom:16px; color:var(--text);
+  }
+  .section-sub{color:var(--muted); font-size:1.02rem; max-width:600px; margin-bottom:56px;}
+
+  [data-reveal]{opacity:0; transform:translateY(24px); transition:opacity 0.7s ease, transform 0.7s ease;}
+  [data-reveal].in{opacity:1; transform:translateY(0);}
+
+  /* ============ HERO ============ */
+  .hero{
+    min-height:100vh; display:flex; align-items:center; padding-top:120px; padding-bottom:80px;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:60px; align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono);
+    font-size:0.78rem; color:var(--cyan); background:rgba(34,211,238,0.08);
+    border:1px solid rgba(34,211,238,0.25); padding:6px 14px; border-radius:999px; margin-bottom:28px;
+  }
+  .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  h1.hero-title{
+    font-family:var(--display); font-weight:700; letter-spacing:-0.03em; line-height:1.05;
+    font-size:clamp(2.4rem, 5vw, 3.9rem); margin-bottom:22px;
+  }
+  h1.hero-title .grad{
+    background:linear-gradient(120deg, var(--indigo) 10%, var(--cyan) 55%, var(--purple) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-desc{color:var(--muted); font-size:1.08rem; max-width:520px; margin-bottom:14px;}
+  .typing-line{
+    font-family:var(--mono); font-size:0.98rem; color:var(--text); margin-bottom:36px; min-height:26px;
+  }
+  .typing-line .cursor{
+    display:inline-block; width:2px; height:1.1em; background:var(--cyan);
+    margin-left:2px; vertical-align:middle; animation:blink 0.9s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  .hero-ctas{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:48px;}
+  .btn-primary{
+    background:linear-gradient(120deg, var(--indigo), var(--indigo-2));
+    color:#fff; padding:13px 26px; border-radius:10px; text-decoration:none;
+    font-weight:600; font-size:0.94rem; display:inline-flex; align-items:center; gap:8px;
+    box-shadow:0 0 0 1px rgba(99,102,241,0.4), 0 8px 24px rgba(99,102,241,0.25);
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 0 0 1px rgba(99,102,241,0.6), 0 14px 30px rgba(99,102,241,0.35);}
+  .btn-secondary{
+    border:1px solid var(--border); color:var(--text); padding:13px 26px; border-radius:10px;
+    text-decoration:none; font-weight:600; font-size:0.94rem; display:inline-flex; align-items:center; gap:8px;
+    transition:all 0.25s ease; background:rgba(255,255,255,0.02);
+  }
+  .btn-secondary:hover{border-color:var(--cyan); background:rgba(34,211,238,0.06); transform:translateY(-2px);}
+
+  .hero-stats{display:flex; gap:36px; flex-wrap:wrap;}
+  .hstat b{
+    display:block; font-family:var(--mono); font-size:1.5rem; font-weight:600;
+    background:linear-gradient(120deg,var(--cyan),var(--indigo)); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hstat span{font-size:0.8rem; color:var(--muted);}
+
+  /* Signature element: live query / dashboard panel */
+  .panel{
+    background:linear-gradient(180deg, var(--surface), var(--surface-2));
+    border:1px solid var(--border); border-radius:16px; overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+    position:relative;
+  }
+  .panel::before{
+    content:''; position:absolute; inset:0; border-radius:16px; padding:1px;
+    background:linear-gradient(135deg, rgba(99,102,241,0.4), transparent 40%, rgba(34,211,238,0.25));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+  .panel-head{
+    display:flex; align-items:center; gap:8px; padding:14px 18px; border-bottom:1px solid var(--border);
+  }
+  .panel-head .dot{width:10px;height:10px;border-radius:50%;}
+  .panel-head .r{background:#f87171;} .panel-head .y{background:#fbbf24;} .panel-head .g{background:#34d399;}
+  .panel-head .fname{margin-left:10px; font-family:var(--mono); font-size:0.78rem; color:var(--muted);}
+  .panel-body{padding:22px 24px 26px;}
+  .query-line{font-family:var(--mono); font-size:0.86rem; color:var(--muted); line-height:1.9;}
+  .query-line .kw{color:var(--cyan);}
+  .query-line .str{color:#a5f3ba;}
+  .query-line .fn{color:var(--purple);}
+  #query-output{color:var(--text);}
+
+  .kpi-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px;}
+  .kpi-card{
+    background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:10px; padding:16px;
+  }
+  .kpi-card .kpi-label{font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;}
+  .kpi-card .kpi-value{font-family:var(--mono); font-size:1.5rem; font-weight:600; color:var(--text);}
+  .kpi-card .kpi-value.cyan{color:var(--cyan);}
+  .kpi-card .kpi-value.purple{color:var(--purple);}
+  .kpi-bar{height:4px; border-radius:2px; background:var(--border); margin-top:10px; overflow:hidden;}
+  .kpi-bar i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--indigo),var(--cyan)); transition:width 1.4s cubic-bezier(.2,.8,.2,1);}
+
+  /* ============ ABOUT ============ */
+  .about-grid{display:grid; grid-template-columns:0.85fr 1.15fr; gap:60px; align-items:start;}
+  .about-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;
+  }
+  .about-card .initials{
+    width:64px;height:64px;border-radius:14px; margin-bottom:18px;
+    background:linear-gradient(135deg,var(--indigo),var(--purple));
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--display); font-weight:700; font-size:1.3rem; color:#fff;
+  }
+  .about-card h3{font-family:var(--display); font-size:1.15rem; margin-bottom:4px;}
+  .about-card p.role{color:var(--cyan); font-size:0.88rem; font-family:var(--mono); margin-bottom:18px;}
+  .about-meta{list-style:none; display:flex; flex-direction:column; gap:10px;}
+  .about-meta li{display:flex; gap:10px; font-size:0.88rem; color:var(--muted);}
+  .about-meta li b{color:var(--text); font-weight:500;}
+
+  .about-text p{color:var(--muted); font-size:1.02rem; margin-bottom:18px;}
+  .about-text strong{color:var(--text); font-weight:600;}
+  .about-highlights{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px;}
+  .highlight{
+    border:1px solid var(--border); border-radius:12px; padding:18px; background:rgba(255,255,255,0.015);
+    transition:border-color 0.25s ease, transform 0.25s ease;
+  }
+  .highlight:hover{border-color:var(--indigo); transform:translateY(-3px);}
+  .highlight .h-num{font-family:var(--mono); color:var(--cyan); font-size:0.78rem; margin-bottom:8px;}
+  .highlight h4{font-size:0.95rem; margin-bottom:6px; font-weight:600;}
+  .highlight p{font-size:0.84rem; color:var(--muted); margin:0;}
+
+  /* ============ SKILLS ============ */
+  .skills-tabs{display:flex; gap:10px; margin-bottom:36px; flex-wrap:wrap;}
+  .skill-tab{
+    font-family:var(--mono); font-size:0.82rem; padding:9px 18px; border-radius:8px;
+    border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer;
+    transition:all 0.25s ease;
+  }
+  .skill-tab.active{background:rgba(99,102,241,0.12); border-color:var(--indigo); color:var(--text);}
+  .skill-tab:hover{border-color:var(--cyan); color:var(--text);}
+
+  .skills-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;}
+  .skill-group{display:none;}
+  .skill-group.active{display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;}
+  .skill-row{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px;
+  }
+  .skill-row-top{display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.88rem;}
+  .skill-row-top span:first-child{font-weight:500;}
+  .skill-row-top span:last-child{font-family:var(--mono); color:var(--muted); font-size:0.8rem;}
+  .skill-track{height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .skill-fill{height:100%; width:0%; border-radius:3px; background:linear-gradient(90deg,var(--indigo),var(--cyan)); transition:width 1.2s cubic-bezier(.2,.8,.2,1);}
+
+  /* ============ PROJECTS ============ */
+  .projects-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
+  .project-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:26px;
+    display:flex; flex-direction:column; transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position:relative; overflow:hidden;
+  }
+  .project-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,var(--indigo),var(--cyan),var(--purple));
+    transform:scaleX(0); transform-origin:left; transition:transform 0.4s ease;
+  }
+  .project-card:hover{transform:translateY(-6px); border-color:rgba(99,102,241,0.4); box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+  .project-card:hover::before{transform:scaleX(1);}
+  .project-icon{
+    width:42px;height:42px;border-radius:10px; background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.25);
+    display:flex; align-items:center; justify-content:center; margin-bottom:18px; font-size:1.15rem;
+  }
+  .project-card h3{font-family:var(--display); font-size:1.12rem; margin-bottom:10px; font-weight:600;}
+  .project-card p.desc{color:var(--muted); font-size:0.88rem; margin-bottom:18px; flex-grow:1;}
+  .tech-pills{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px;}
+  .tech-pill{
+    font-family:var(--mono); font-size:0.7rem; padding:4px 10px; border-radius:6px;
+    background:rgba(34,211,238,0.08); color:var(--cyan); border:1px solid rgba(34,211,238,0.2);
+  }
+  .project-link{
+    color:var(--text); text-decoration:none; font-size:0.85rem; font-weight:600;
+    display:inline-flex; align-items:center; gap:6px; border-top:1px solid var(--border); padding-top:16px;
+    transition:gap 0.25s ease, color 0.25s ease;
+  }
+  .project-link:hover{color:var(--cyan); gap:10px;}
+
+  /* ============ EXPERIENCE TIMELINE ============ */
+  .timeline{position:relative; padding-left:32px;}
+  .timeline::before{
+    content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px;
+    background:linear-gradient(180deg, var(--indigo), var(--cyan), transparent);
+  }
+  .tl-item{position:relative; padding-bottom:44px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-dot{
+    position:absolute; left:-32px; top:2px; width:14px; height:14px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--cyan); box-shadow:0 0 0 4px rgba(34,211,238,0.1);
+  }
+  .tl-date{font-family:var(--mono); font-size:0.76rem; color:var(--cyan); margin-bottom:6px; display:block;}
+  .tl-item h3{font-family:var(--display); font-size:1.08rem; margin-bottom:4px;}
+  .tl-item .tl-org{color:var(--muted); font-size:0.86rem; margin-bottom:12px;}
+  .tl-item ul{list-style:none; display:flex; flex-direction:column; gap:8px;}
+  .tl-item ul li{color:var(--muted); font-size:0.9rem; padding-left:18px; position:relative;}
+  .tl-item ul li::before{content:'→'; position:absolute; left:0; color:var(--indigo); font-size:0.8rem;}
+
+  /* ============ CONTACT ============ */
+  .contact-panel{
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
+    border:1px solid var(--border); border-radius:20px; padding:64px 48px; text-align:center;
+    position:relative; overflow:hidden;
+  }
+  .contact-panel::after{
+    content:''; position:absolute; width:400px;height:400px; background:radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
+    top:-150px; right:-100px; pointer-events:none;
+  }
+  .contact-panel h2{font-family:var(--display); font-size:clamp(1.8rem,3.4vw,2.5rem); margin-bottom:14px;}
+  .contact-panel p{color:var(--muted); max-width:480px; margin:0 auto 36px;}
+  .contact-links{display:flex; justify-content:center; gap:16px; flex-wrap:wrap;}
+  .contact-chip{
+    display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.03);
+    border:1px solid var(--border); padding:12px 20px; border-radius:10px; text-decoration:none;
+    color:var(--text); font-size:0.88rem; font-weight:500; transition:all 0.25s ease;
+  }
+  .contact-chip:hover{border-color:var(--cyan); transform:translateY(-3px); background:rgba(34,211,238,0.06);}
+
+  footer{
+    padding:32px 0; text-align:center; color:var(--muted); font-size:0.82rem;
+    border-top:1px solid var(--border); position:relative; z-index:1;
+  }
+  footer span{font-family:var(--mono);}
+
+  /* Responsive */
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .about-grid{grid-template-columns:1fr;}
+    .projects-grid{grid-template-columns:1fr 1fr;}
+    .nav-links{display:none;}
+    .nav-toggle{display:flex;}
+  }
+  @media (max-width:640px){
+    .projects-grid{grid-template-columns:1fr;}
+    .skills-grid, .skill-group.active{grid-template-columns:1fr;}
+    .about-highlights{grid-template-columns:1fr;}
+    section{padding:80px 0;}
+    .contact-panel{padding:44px 22px;}
+    .hero-stats{gap:24px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div class="bg-grid"></div>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo"><span class="logo-mark">VL</span> Vidhyalakshmi</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://github.com/vidhya2012" target="_blank" rel="noopener" class="btn-ghost-sm">GitHub ↗</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+  <ul class="nav-links" id="mobileMenu" style="display:none; flex-direction:column; gap:0; padding:0 24px 18px;">
+    <li style="padding:10px 0;"><a href="#about">About</a></li>
+    <li style="padding:10px 0;"><a href="#skills">Skills</a></li>
+    <li style="padding:10px 0;"><a href="#projects">Projects</a></li>
+    <li style="padding:10px 0;"><a href="#experience">Experience</a></li>
+    <li style="padding:10px 0;"><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-eyebrow"><span class="dot"></span> Open to Data Analyst · Business Analyst roles</div>
+      <h1 class="hero-title">Turning messy data<br>into <span class="grad">decisions people trust.</span></h1>
+      <p class="hero-desc">MCA graduate building dashboards, KPI systems and predictive models — from loan risk to fraud detection — with SQL, Python and Power BI at the core.</p>
+      <div class="typing-line"><span id="typed"></span><span class="cursor"></span></div>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary">View Projects →</a>
+        <a href="https://github.com/vidhya2012" target="_blank" rel="noopener" class="btn-secondary">GitHub Profile</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><b data-count="47000" data-suffix="+">0</b><span>Records analyzed</span></div>
+        <div class="hstat"><b data-count="3" data-suffix="">0</b><span>End-to-end projects</span></div>
+        <div class="hstat"><b data-count="150" data-suffix="+">0</b><span>LeetCode problems</span></div>
+        <div class="hstat"><b data-count="0" data-suffix="Gold">0</b><span>HackerRank SQL badge</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="fname">loan_risk_query.sql</span>
+      </div>
+      <div class="panel-body">
+        <div class="query-line"><span class="kw">SELECT</span> region, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> applicants,</div>
+        <div class="query-line">&nbsp;&nbsp;<span class="fn">ROUND</span>(<span class="fn">AVG</span>(default_flag),3) <span class="kw">AS</span> default_rate</div>
+        <div class="query-line"><span class="kw">FROM</span> loan_applicants</div>
+        <div class="query-line"><span class="kw">WHERE</span> income_band <span class="kw">IS NOT NULL</span></div>
+        <div class="query-line"><span class="kw">GROUP BY</span> region <span class="kw">ORDER BY</span> default_rate <span class="kw">DESC</span>;</div>
+        <div class="query-line" style="margin-top:10px;" id="query-output">&gt; <span id="query-status">running…</span></div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Records Cleaned</div>
+            <div class="kpi-value">10,482</div>
+            <div class="kpi-bar"><i data-w="88"></i></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Model Precision</div>
+            <div class="kpi-value cyan">0.91</div>
+            <div class="kpi-bar"><i data-w="91"></i></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Dashboard Load</div>
+            <div class="kpi-value purple">−42%</div>
+            <div class="kpi-bar"><i data-w="70"></i></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Stakeholder Reports</div>
+            <div class="kpi-value">Self-serve</div>
+            <div class="kpi-bar"><i data-w="100"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div data-reveal>
+        <div class="about-card">
+          <div class="initials">VL</div>
+          <h3>Vidhyalakshmi RV</h3>
+          <p class="role">Data Analyst</p>
+          <ul class="about-meta">
+            <li><b>Based in</b> Ranipet, Tamil Nadu, India</li>
+            <li><b>Education</b> MCA — 9.0 CGPA, 2026</li>
+            <li><b>Focus</b> SQL · Python · Power BI</li>
+            <li><b>Certified</b> IBM Data Analyst · HackerRank SQL Gold</li>
+          </ul>
+        </div>
+      </div>
+      <div data-reveal>
+        <span class="eyebrow">About</span>
+        <h2 class="section-title">I start with the business question, not the algorithm.</h2>
+        <div class="about-text">
+          <p>I'm drawn to data that has real stakes attached — where a wrong number costs someone money, or a missed pattern lets fraud slip through. That's what pulled me toward analytics in the first place.</p>
+          <p>During a data analytics internship, I <strong>replaced a manual weekly spreadsheet process</strong> with a self-serve Power BI dashboard for loan-default risk, after first cleaning and reconciling 10,000+ applicant records from multiple sources. Outside of that, I've built three full analytics projects — sales performance, customer churn, and credit card fraud detection — each one carried from raw data through EDA, modeling, and a dashboard someone could actually act on.</p>
+          <p>Day to day I work in <strong>SQL, Python (Pandas, NumPy, Scikit-learn) and Power BI</strong>, and I care as much about whether a stakeholder can read the dashboard in under a minute as I do about the model behind it.</p>
+        </div>
+        <div class="about-highlights">
+          <div class="highlight"><div class="h-num">01</div><h4>Data-first</h4><p>Clean and reconcile before modeling — inconsistent sources were skewing earlier reports.</p></div>
+          <div class="highlight"><div class="h-num">02</div><h4>Stakeholder-ready</h4><p>Dashboards built for non-technical teams to self-serve, not just for analysts.</p></div>
+          <div class="highlight"><div class="h-num">03</div><h4>Statistically grounded</h4><p>EDA and classification metrics guide every model, not gut feel.</p></div>
+          <div class="highlight"><div class="h-num">04</div><h4>Always learning</h4><p>150+ SQL/Python problems solved; currently exploring applied AI in analytics workflows.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <span class="eyebrow" data-reveal>Skills</span>
+    <h2 class="section-title" data-reveal>The toolkit behind the dashboards.</h2>
+    <p class="section-sub" data-reveal>Core tools I use daily, plus the wider stack I draw on for cleaning, warehousing, and shipping analysis end-to-end.</p>
+
+    <div class="skills-tabs" data-reveal>
+      <button class="skill-tab active" data-tab="core">Core</button>
+      <button class="skill-tab" data-tab="tools">Tools &amp; Libraries</button>
+      <button class="skill-tab" data-tab="cloud">Cloud &amp; Platform</button>
+    </div>
+
+    <div data-reveal>
+      <div class="skill-group active" data-group="core">
+        <div class="skill-row"><div class="skill-row-top"><span>SQL</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="94"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Python</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="88"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Power BI</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="90"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Excel</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="85"></div></div></div>
+      </div>
+
+      <div class="skill-group" data-group="tools">
+        <div class="skill-row"><div class="skill-row-top"><span>Pandas / NumPy</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="88"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Matplotlib / Seaborn</span><span>Proficient</span></div><div class="skill-track"><div class="skill-fill" data-level="80"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Scikit-learn</span><span>Proficient</span></div><div class="skill-track"><div class="skill-fill" data-level="78"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Data Cleaning &amp; ETL</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="90"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>DAX / Power Query</span><span>Advanced</span></div><div class="skill-track"><div class="skill-fill" data-level="85"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Git &amp; GitHub</span><span>Proficient</span></div><div class="skill-track"><div class="skill-fill" data-level="75"></div></div></div>
+      </div>
+
+      <div class="skill-group" data-group="cloud">
+        <div class="skill-row"><div class="skill-row-top"><span>AWS Fundamentals</span><span>Familiar</span></div><div class="skill-track"><div class="skill-fill" data-level="60"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Azure</span><span>Familiar</span></div><div class="skill-track"><div class="skill-fill" data-level="50"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Snowflake</span><span>Proficient</span></div><div class="skill-track"><div class="skill-fill" data-level="72"></div></div></div>
+        <div class="skill-row"><div class="skill-row-top"><span>Data Warehousing</span><span>Proficient</span></div><div class="skill-track"><div class="skill-fill" data-level="74"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <span class="eyebrow" data-reveal>Projects</span>
+    <h2 class="section-title" data-reveal>Three problems. Three end-to-end builds.</h2>
+    <p class="section-sub" data-reveal>Each one runs from raw records through EDA and modeling to a dashboard a stakeholder can actually use.</p>
+
+    <div class="projects-grid">
+      <div class="project-card" data-reveal>
+        <div class="project-icon">📈</div>
+        <h3>Sales Performance Dashboard</h3>
+        <p class="desc">Structured 20,000+ raw sales records into an analytics-ready dataset, then built a Power BI dashboard with DAX measures for Sales, Profit, YoY Growth and Customer KPIs. EDA surfaced regional trends and top-performing products; a data-model redesign measurably improved load performance.</p>
+        <div class="tech-pills">
+          <span class="tech-pill">SQL</span><span class="tech-pill">Python</span><span class="tech-pill">Power BI</span><span class="tech-pill">DAX</span>
+        </div>
+        <a href="https://github.com/vidhya2012" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+      </div>
+
+      <div class="project-card" data-reveal>
+        <div class="project-icon">🔁</div>
+        <h3>Customer Churn Analysis</h3>
+        <p class="desc">Analyzed 7,000+ customer records to isolate the strongest statistical predictors of churn, then segmented customers by behavior to target retention. A Power BI view tracks Churn Rate, Retention, Revenue and CLV side by side, translated into specific retention recommendations.</p>
+        <div class="tech-pills">
+          <span class="tech-pill">SQL</span><span class="tech-pill">Python</span><span class="tech-pill">Power BI</span>
+        </div>
+        <a href="https://github.com/vidhya2012" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+      </div>
+
+      <div class="project-card" data-reveal>
+        <div class="project-icon">🛡️</div>
+        <h3>Credit Card Fraud Detection</h3>
+        <p class="desc">Cleaned and analyzed 10,000+ transaction records, flagging anomalies with EDA and Python visualizations. Built and validated an online machine-learning model for fraud detection, feeding a live Power BI dashboard tracking fraud trends and risk indicators as new data arrived.</p>
+        <div class="tech-pills">
+          <span class="tech-pill">Python</span><span class="tech-pill">SQL</span><span class="tech-pill">Scikit-learn</span><span class="tech-pill">Power BI</span>
+        </div>
+        <a href="https://github.com/vidhya2012" target="_blank" rel="noopener" class="project-link">View on GitHub →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <span class="eyebrow" data-reveal>Experience &amp; Learning</span>
+    <h2 class="section-title" data-reveal>From spreadsheet to self-serve.</h2>
+    <p class="section-sub" data-reveal>A short but dense timeline — internship, self-directed projects, and the certifications along the way.</p>
+
+    <div class="timeline" data-reveal>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">2026</span>
+        <h3>Data Analytics Intern — Loan Risk Analytics</h3>
+        <p class="tl-org">Remote · 1 month</p>
+        <ul>
+          <li>Cleaned and transformed 10,000+ loan applicant records from multiple sources, resolving inconsistencies that had been skewing earlier reports.</li>
+          <li>Ran EDA across income band, credit history and loan tenure; built and validated a loan-default prediction model against standard classification metrics.</li>
+          <li>Replaced static spreadsheet reporting with an interactive Power BI dashboard and walked stakeholders through it.</li>
+        </ul>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">Jan – May 2026</span>
+        <h3>Project Trainee — ML for Financial Risk</h3>
+        <p class="tl-org">Self-directed / academic · Ranipet</p>
+        <ul>
+          <li>Built a real-time credit card fraud detection pipeline, tuned to minimize false negatives while keeping inference latency low enough for live transaction feeds.</li>
+          <li>Compared Logistic Regression, Random Forest and XGBoost for loan-default prediction, evaluated on Accuracy, Precision, Recall, F1 and ROC-AUC.</li>
+          <li>Ran end-to-end feature engineering on financial and demographic data — missing values, encoding, and scaling.</li>
+        </ul>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">2026</span>
+        <h3>Master of Computer Applications (MCA)</h3>
+        <p class="tl-org">C. Abdul Hakeem College of Engineering &amp; Technology · CGPA 9.0/10</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">2024</span>
+        <h3>Bachelor of Computer Applications (BCA)</h3>
+        <p class="tl-org">Arcot Sri Mahalakshmi Women's College · CGPA 8.3/10</p>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">Certifications</span>
+        <h3>HackerRank SQL Gold · IBM Data Analyst · NPTEL Cloud Computing Elite</h3>
+        <p class="tl-org">Plus Power BI for Data Analysts, Google Python, and Google AI Essentials (Udemy / Google)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-panel" data-reveal>
+      <span class="eyebrow" style="justify-content:center;">Get in touch</span>
+      <h2>Have a data problem worth solving?</h2>
+      <p>Open to Data Analyst, Business Analyst and Data Infrastructure roles — I take messy, ambiguous questions and hand back something clean and defensible.</p>
+      <div class="contact-links">
+        <a class="contact-chip" href="mailto:vidhyalakshmi2004@gmail.com">✉️ vidhyalakshmi2004@gmail.com</a>
+        <a class="contact-chip" href="https://linkedin.com/in/vidhya-lakshmi-181943299" target="_blank" rel="noopener">in LinkedIn</a>
+        <a class="contact-chip" href="https://github.com/vidhya2012" target="_blank" rel="noopener">🐙 GitHub</a>
+        <a class="contact-chip" href="tel:8124972583">📞 8124972583</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Vidhyalakshmi RV — built with curiosity for clean data.</span>
+</footer>
+
+<script>
+  // Scroll progress bar
+  const progressBar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  navToggle.addEventListener('click', () => {
+    mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.style.display = 'none'));
+
+  // Typing effect
+  const phrases = [
+    "cleaning 10,000+ loan records so nobody trusts a wrong number...",
+    "building a Power BI dashboard stakeholders can self-serve...",
+    "flagging fraud without crying wolf on every transaction...",
+    "translating churn signals into retention that actually works..."
+  ];
+  const typedEl = document.getElementById('typed');
+  let pIndex = 0, cIndex = 0, deleting = false;
+
+  function typeLoop(){
+    const current = phrases[pIndex];
+    if(!deleting){
+      typedEl.textContent = current.slice(0, cIndex + 1);
+      cIndex++;
+      if(cIndex === current.length){ deleting = true; setTimeout(typeLoop, 1600); return; }
+    } else {
+      typedEl.textContent = current.slice(0, cIndex - 1);
+      cIndex--;
+      if(cIndex === 0){ deleting = false; pIndex = (pIndex + 1) % phrases.length; }
+    }
+    setTimeout(typeLoop, deleting ? 28 : 42);
+  }
+  typeLoop();
+
+  // Query output + KPI bar reveal in hero panel
+  setTimeout(() => {
+    document.getElementById('query-status').textContent = '5 rows returned in 0.31s ✓';
+    document.querySelectorAll('.kpi-bar i').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+  }, 900);
+
+  // Count-up stats
+  const counters = document.querySelectorAll('.hstat b[data-count]');
+  let countersStarted = false;
+  function animateCounters(){
+    if(countersStarted) return;
+    countersStarted = true;
+    counters.forEach(el => {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      if(target === 0 && suffix){ el.textContent = suffix; return; }
+      let cur = 0;
+      const step = Math.max(1, Math.ceil(target / 60));
+      const tick = () => {
+        cur += step;
+        if(cur >= target){ el.textContent = target.toLocaleString() + suffix; return; }
+        el.textContent = cur.toLocaleString() + suffix;
+        requestAnimationFrame(tick);
+      };
+      tick();
+    });
+  }
+  setTimeout(animateCounters, 500);
+
+  // Skill tabs
+  document.querySelectorAll('.skill-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.skill-group').forEach(g => g.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`.skill-group[data-group="${tab.dataset.tab}"]`).classList.add('active');
+      revealSkillBars();
+    });
+  });
+
+  function revealSkillBars(){
+    document.querySelectorAll('.skill-group.active .skill-fill').forEach(fill => {
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { fill.style.width = fill.dataset.level + '%'; }, 60);
+      });
+    });
+  }
+
+  // Scroll reveal (IntersectionObserver)
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        if(entry.target.id === 'skills' || entry.target.closest('#skills')){
+          // no-op, handled below
+        }
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Trigger initial skill bar animation once skills section is visible
+  const skillsSection = document.getElementById('skills');
+  const skillsIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        revealSkillBars();
+        skillsIo.disconnect();
+      }
+    });
+  }, { threshold: 0.2 });
+  skillsIo.observe(skillsSection);
+</script>
+
+</body>
+</html>
