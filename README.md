@@ -22,7 +22,7 @@ Welcome to my personal portfolio website! This project showcases my skills, proj
 
 Visit the live portfolio here:
 
-https://vidhya2012.github.io/portfolio/
+https://vidhya2012.github.io/Portfolio/
 
 > Replace `yourusername` with your actual GitHub username.
 
